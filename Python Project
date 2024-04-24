@@ -1,0 +1,109 @@
+# importing all required libraries
+import imdb
+import pyttsx3
+import speech_recognition as sr
+import datetime
+from tkinter import *
+# from tkinter import *
+
+# Function for speaking
+def speak(text):
+	engine = pyttsx3.init()
+	voices = engine.getProperty('voices')
+	engine.setProperty('voice', voices[1].id)
+	rate = engine.getProperty('rate')
+
+	engine.setProperty('rate', rate-20)
+
+	engine.say(text)
+	engine.runAndWait()
+
+
+# calling the speak() function
+speak("enter the movie name ")
+
+
+# Function for searching movie
+def search_movie():
+
+	# gathering information from IMDb
+	moviesdb = imdb.IMDb()
+	text=input("enter the title of the movie:")
+	# search for title
+	# passing input for searching movie
+	movies = moviesdb.search_movie(text)
+
+	speak("Searching for " + text)
+	if len(movies) == 0:
+		speak("No result found")
+	else:
+		speak("I found these:")
+
+		for movie in movies:
+
+			title = movie['title']
+			year = movie['year']
+			# speaking title with releasing year
+			speak(f'{title}-{year}')
+	        
+			info = movie.getID()
+			movie = moviesdb.get_movie(info)
+
+			title = movie['title']
+			year = movie['year']
+			rating = movie['rating']
+			plot = movie['plot outline']
+
+			# the below if-else is for past and future release
+			if year < int(datetime.datetime.now().strftime("%Y")):
+				print(
+					f'{title} was released in {year} has IMDB rating of {rating}.\
+The plot summary of movie is{plot}')
+				k=f'{title} was released in {year} has IMDB rating of {rating}.\
+The plot summary of movie is{plot}' 
+				window=Tk()
+				window.geometry('400x400')
+				window.maxsize(1000,600)
+				window.title("mI")
+				d=0
+				for i in range(len(k)):
+					if i%100==0 :
+							p=k[d:i]
+							d=i
+							label=Label(text=p,bg="orange",fg="white",padx=100,pady=3,font=("comicsansms",12,"bold"))
+							label.pack(fill="x")
+					elif(i==(len(k)-1)):
+						p=k[d:len(k)]
+						label=Label(text=p,bg="orange",fg="white",padx=100,pady=3,font=("comicsansms",12,"bold"))
+						label.pack(fill ="x")
+				window.mainloop()       							
+				speak(f'{title} was released in {year} has IMDB rating of {rating}.\
+                    The plot summary of movie is{plot}')
+				break
+			else:
+				k=f'{title} will release in {year} has IMDB rating of {rating}.\
+The plot summary of movie is{plot}'
+				print('{title} will release in {year} has IMDB rating of {rating}.\
+					The plot summary of movie is{plot}')
+				window=Tk()
+				window.geometry('1000x500')
+				# window.minsize(400,400)
+				# window.maxsize(1000,600)
+				window.title("mI")
+				d=0
+				for i in range(len(k)):
+					if i%100==0 :
+							p=k[d:i]
+							d=i
+							label=Label(text=p,bg="orange",fg="white",padx=100,pady=3,font=("comicsansms",12,"bold"))
+							label.pack(fill="x")
+					elif(i==(len(k)-1)):
+						p=k[d:len(k)]
+						label=Label(text=p,bg="orange",fg="white",padx=100,pady=3,font=("comicsansms",12,"bold"))
+						label.pack(fill ="x")
+				speak(
+					f'{title} will release in {year} has IMDB rating of {rating}.\
+					The plot summary of movie is{plot}')
+				window.mainloop()       				
+				break
+search_movie()
